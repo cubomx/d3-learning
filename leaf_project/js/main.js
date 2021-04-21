@@ -118,23 +118,26 @@ d3.json("data/data.json").then(function(data){
 		
 	}, 1000);
 
-	
-
 	function update(data){
         xLabel.text(years[index]);
 
 		var circles = g.selectAll('circle') // join the new data
         .data(data[index]);
 
-        circles.exit().remove(); // remove old element
+        circles.exit()
+		.transition(t)
+			.attr("cx", x(0))
+			.attr("cy", y(0))
+			.attr("r", 0)
+		.remove(); // remove old element
 
         circles.enter().append("circle")
+		.attr("fill", (d) => {return colors[d.continent]})
 		.merge(circles)
 		.transition(t)
         .attr("cx", (d) => { return x(d.income); })
         .attr("cy", (d) => { return y(d.life_exp); })
-		.attr("r", (d) => {return Math.sqrt(area(d.population)/ Math.PI)})
-        .attr("fill", (d) => {return colors[d.continent]});
+		.attr("r", (d) => {return Math.sqrt(area(d.population)/ Math.PI)});
 
 	}
 })
